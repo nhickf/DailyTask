@@ -1,6 +1,6 @@
 package com.gcpx.tasklist.data.usecase
 
-import com.gcpx.tasklist.data.model.Task
+import com.gcpx.core.data.model.Task
 import com.gcpx.tasklist.data.repository.ITaskListRepository
 import kotlinx.coroutines.flow.Flow
 

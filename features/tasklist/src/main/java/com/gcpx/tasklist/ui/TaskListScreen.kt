@@ -6,7 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.gcpx.tasklist.data.model.Task
+import com.gcpx.core.data.model.Task
 import com.gcpx.tasklist.domain.TaskListViewModel
 import com.gcpx.tasklist.domain.TaskUiState
 import com.gcpx.tasklist.ui.components.TaskItem

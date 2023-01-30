@@ -34,6 +34,7 @@ ext.appDependencies = dependencyGroup {
 ext.appModules = dependencyGroup {
     implementation project(':core')
     implementation project(':features:tasklist')
+    implementation project(':features:configuretask')
 }
 
 ext.featureTaskList = dependencyGroup {
@@ -50,6 +51,15 @@ ext.featureCoreDependencies = dependencyGroup {
     koinDependencies()
     roomDependencies()
     composeDependencies()
+}
+
+ext.featureConfigureTaskDependencies = dependencyGroup {
+    implementation project(':core')
+    coreDependencies()
+    composeDependencies()
+    viewModelDependencies()
+    navigationDependencies()
+    koinDependencies()
 }
 
 ext.coreDependencies = dependencyGroup {

@@ -2,7 +2,7 @@ package com.gcpx.tasklist.domain
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gcpx.tasklist.data.model.Task
+import com.gcpx.core.data.model.Task
 import com.gcpx.tasklist.data.usecase.TaskUseCase
 import kotlinx.coroutines.flow.*
 
@@ -12,10 +12,10 @@ internal class TaskListViewModel(
 
     val uiState: StateFlow<TaskUiState> = useCase.getAllTaskUseCase()
         .map {
-            if (it.isEmpty()) {
+           return@map if (it.isEmpty()) {
                 TaskUiState.Empty
             } else {
-                TaskUiState::Tasks
+                TaskUiState.Tasks(it)
             }
         }
         .stateIn(

@@ -1,4 +1,4 @@
-package com.gcpx.tasklist.data.model
+package com.gcpx.core.data.model
 
 import com.gcpx.core.data.source.database.entities.TaskEntity
 
@@ -25,3 +25,9 @@ fun Task.wrapTaskToEntity(): TaskEntity =
         theme = theme
     )
 
+val defaultTask = Task(
+    1,
+    "",
+    123,
+    ""
+)

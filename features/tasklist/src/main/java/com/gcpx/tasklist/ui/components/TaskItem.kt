@@ -15,20 +15,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gcpx.core.data.model.Task
+import com.gcpx.core.data.model.defaultTask
 import com.gcpx.core.ui.TextIcon
-import com.gcpx.tasklist.R
-import com.gcpx.tasklist.data.model.Task
+import com.gcpcx.core.R
 
 @Preview(showBackground = true)
 @Composable
 fun ItemPreview() {
     TaskItem(
-        Task(
-            1,
-            "tite",
-            123,
-            ""
-        )
+        defaultTask
     )
 }
 
@@ -52,7 +48,7 @@ fun TaskItem(task: Task) {
         )
         TextIcon(
             text = task.length.toString(),
-            icon = R.drawable.ic_clock
+            trailingIcon = R.drawable.ic_clock
         )
 
         Icon(

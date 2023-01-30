@@ -1,6 +1,6 @@
 package com.gcpx.tasklist.data.usecase
 
-import com.gcpx.tasklist.data.model.Task
+import com.gcpx.core.data.model.Task
 import com.gcpx.tasklist.data.repository.ITaskListRepository
 
 internal class AddTaskUseCase(
@@ -8,7 +8,6 @@ internal class AddTaskUseCase(
 ) {
 
     suspend operator fun invoke(task: Task) {
-        repository.addTask(task)
     }
 
 }
