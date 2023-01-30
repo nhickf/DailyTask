@@ -1,0 +1,21 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "Daily Task"
+include ':app'
+include ':app:features:tasklist'
+include ':app:features:taskdetails'
+include ':app:features:configuretask'
+include ':core'
+include ':features:tasklist'
