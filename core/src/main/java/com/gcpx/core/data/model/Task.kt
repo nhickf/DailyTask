@@ -3,7 +3,7 @@ package com.gcpx.core.data.model
 import com.gcpx.core.data.source.database.entities.TaskEntity
 
 data class Task(
-    val id: Int,
+    val id: Int = 0,
     val title: String,
     val length: Int,
     val theme: String
@@ -27,7 +27,7 @@ fun Task.wrapTaskToEntity(): TaskEntity =
 
 val defaultTask = Task(
     1,
-    "",
+    "Test",
     123,
     ""
 )

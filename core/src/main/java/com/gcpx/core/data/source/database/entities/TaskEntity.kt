@@ -2,12 +2,13 @@ package com.gcpx.core.data.source.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.jetbrains.annotations.Nullable
 
 @Entity
 data class TaskEntity(
     @PrimaryKey(autoGenerate = true)
-    val id : Int ,
-    val title : String,
-    val length : Int,
-    val theme : String,
+    val id: Int = 0,
+    val title: String,
+    val length: Int,
+    val theme: String,
 )

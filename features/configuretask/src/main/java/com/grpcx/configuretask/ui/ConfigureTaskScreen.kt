@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,6 +21,7 @@ import com.grpcx.configuretask.domain.ConfigureTaskUiState
 import com.grpcx.configuretask.domain.ConfigureTaskViewModel
 import org.koin.androidx.compose.koinViewModel
 import com.gcpcx.core.R
+import org.koin.core.parameter.parametersOf
 
 @Preview(showBackground = true)
 @Composable
@@ -32,24 +32,21 @@ fun ScreenPreview() {
 
 @Composable
 fun ConfigureTaskScreen() {
-    val viewModel = koinViewModel<ConfigureTaskViewModel>()
+    val viewModel = koinViewModel<ConfigureTaskViewModel> {
+        parametersOf(1)
+    }
     val uiState by viewModel.uiState.collectAsState()
-    
-    ConfigureTaskContent(state = uiState)
+    ConfigureTaskContent(state = uiState , onClick = viewModel::saveTask)
 }
 
 @Composable
-fun ConfigureTaskContent(state : ConfigureTaskUiState){
+fun ConfigureTaskContent(state : ConfigureTaskUiState, onClick: (task: Task) -> Unit){
     when(state){
-        is ConfigureTaskUiState.Error -> TODO()
-        ConfigureTaskUiState.Loading -> TODO()
-        ConfigureTaskUiState.AddNewTask -> ConfigureTaskScope(task = null, onClick = {
-
-        })
-        is ConfigureTaskUiState.UpdateTask-> ConfigureTaskScope(task = state.tasks, onClick = {
-
-        })
+        is ConfigureTaskUiState.Error -> Text(text = "error")
+        ConfigureTaskUiState.Loading -> Text(text = "Loading")
+        is ConfigureTaskUiState.AddNewTask -> ConfigureTaskScope(task = state.task, onClick = onClick)
     }
+    ConfigureTaskScope(task = null, onClick = onClick)
 }
 
 @Composable
@@ -84,7 +81,7 @@ fun ConfigureTaskScope(task : Task?, onClick:(task : Task) -> Unit) {
         ThemeField()
 
         Button(onClick = {
-            onClick(task ?: Task(1, "2", 3, "33"))
+            onClick(task ?: Task(title =  "2", length =  3, theme =  "33"))
         }) {
 
         }
@@ -105,7 +102,7 @@ fun ThemeField() {
     ) {
         Icon(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 16.dp),
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_clock),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_theme),
             contentDescription = null,
             tint = Color.Gray
         )
@@ -119,7 +116,7 @@ fun ThemeField() {
                 .size(24.dp)
                 .background(Color.Blue)
                 .border(width = 1.dp, color = Color.Gray),
-        ){}
+        )
 
     }
 }

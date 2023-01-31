@@ -1,15 +1,18 @@
 package com.gcpx.core.ui
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.TopAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -36,7 +39,8 @@ fun TextIcon(
 
         Text(
             textAlign = TextAlign.Center,
-            text = text)
+            text = text
+        )
 
         trailingIcon?.let {
             Icon(
@@ -46,5 +50,46 @@ fun TextIcon(
             )
         }
 
+    }
+}
+
+@Composable
+fun AppToolbar(
+    toolbarTitle: String = "",
+    leadingIcon: ImageVector? = null,
+    trailingIcon: ImageVector? = null,
+    leadingIconOnClick : () -> Unit = {},
+    trailingIconOnClick : () -> Unit = {},
+) {
+
+    TopAppBar(
+        backgroundColor = Color.White,
+        elevation = 0.dp,
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        leadingIcon?.let {
+            Icon(
+                imageVector = leadingIcon,
+                contentDescription = "",
+                modifier = Modifier.clickable {
+                    leadingIconOnClick.invoke()
+                }
+            )
+        }
+
+        Text(
+            modifier = Modifier.weight(1f),
+            text = toolbarTitle
+        )
+
+        trailingIcon?.let {
+            Icon(
+                imageVector = trailingIcon,
+                contentDescription = "",
+                modifier = Modifier.clickable {
+                    trailingIconOnClick.invoke()
+                }
+            )
+        }
     }
 }

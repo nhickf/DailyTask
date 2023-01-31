@@ -21,6 +21,7 @@ ext {
     koin_version = '3.3.2'
     koin_android_version = '3.3.2'
     koin_android_compose_version = '3.4.1'
+    constrain = '1.0.1'
 }
 
 ext.appDependencies = dependencyGroup {
@@ -35,6 +36,8 @@ ext.appModules = dependencyGroup {
     implementation project(':core')
     implementation project(':features:tasklist')
     implementation project(':features:configuretask')
+    implementation project(':features:taskdetail')
+
 }
 
 ext.featureTaskList = dependencyGroup {
@@ -54,6 +57,15 @@ ext.featureCoreDependencies = dependencyGroup {
 }
 
 ext.featureConfigureTaskDependencies = dependencyGroup {
+    implementation project(':core')
+    coreDependencies()
+    composeDependencies()
+    viewModelDependencies()
+    navigationDependencies()
+    koinDependencies()
+}
+
+ext.featureTaskDetailDependencies = dependencyGroup {
     implementation project(':core')
     coreDependencies()
     composeDependencies()
@@ -94,6 +106,9 @@ ext.composeDependencies = dependencyGroup {
 
     implementation "com.google.accompanist:accompanist-pager:$pager"
     implementation "com.google.accompanist:accompanist-pager-indicators:$pager"
+
+    implementation "androidx.constraintlayout:constraintlayout-compose:$constrain"
+
 }
 
 ext.roomDependencies = dependencyGroup {

@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/configuretask" />
+            <option value="$PROJECT_DIR$/features/taskdetail" />
             <option value="$PROJECT_DIR$/features/tasklist" />
           </set>
         </option>
