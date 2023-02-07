@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ITaskDetailRepository {
 
-    suspend fun updateTask(task: Task)
+    suspend fun updateTime(id: Int , currentLength : Long)
 
     fun getTask(id : Int) : Flow<Task>
 

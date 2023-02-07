@@ -9,6 +9,8 @@ interface ILocalSourceRepository {
 
     fun getTask(id : Int) : Flow<TaskEntity>
 
+    suspend fun updateTime(id: Int , currentLength : Long)
+
     suspend fun addTask(taskEntity: TaskEntity)
 
     suspend fun updateTask(taskEntity: TaskEntity)

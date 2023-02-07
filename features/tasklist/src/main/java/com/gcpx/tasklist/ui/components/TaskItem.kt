@@ -28,7 +28,7 @@ fun ItemPreview() {
 }
 
 @Composable
-fun TaskItem(task: Task , onItemClick : () -> Unit = {}) {
+fun TaskItem(task: Task , onItemClick : (taskId : Int) -> Unit = {}) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,7 +43,7 @@ fun TaskItem(task: Task , onItemClick : () -> Unit = {}) {
                 ),
                 shape = RoundedCornerShape(4.dp)
             ).clickable {
-                onItemClick.invoke()
+                onItemClick.invoke(task.id)
             }
     ) {
         Row(

@@ -1,5 +1,7 @@
 package com.gcpcx.taskdetail.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,6 +12,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,18 +26,43 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.gcpx.core.ui.TextIcon
 import com.gcpcx.core.R
+import com.gcpcx.taskdetail.data.Timer
+import com.gcpcx.taskdetail.domain.TaskDetailUiState
+import com.gcpcx.taskdetail.domain.TaskDetailViewModel
+import com.gcpx.core.data.model.Task
 import com.gcpx.core.ui.AppToolbar
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
+import java.time.Duration
 
 @Composable
+@Preview(showBackground = true)
 fun TaskDetailScreen(
+    taskId: Int = 0,
     leadingIconOnClick: () -> Unit = {},
 ) {
-    TaskDetailContent(leadingIconOnClick)
+
+    val viewModel = koinViewModel<TaskDetailViewModel> {
+        parametersOf(taskId)
+    }
+    val uiState by viewModel.uiState.collectAsState()
+
+    TaskDetailContent(
+        state = uiState,
+        leadingIconOnClick = leadingIconOnClick,
+        onStart = viewModel::startTimer,
+        onPause = {},
+        onStop = {}
+    )
 }
 
 @Composable
 fun TaskDetailContent(
+    state: TaskDetailUiState,
     leadingIconOnClick: () -> Unit = {},
+    onStart: (length: Int) -> Unit = {},
+    onPause: () -> Unit = {},
+    onStop: () -> Unit = {},
 ) {
     Column {
         AppToolbar(
@@ -41,14 +70,30 @@ fun TaskDetailContent(
             toolbarTitle = "Daily Tasks",
             leadingIconOnClick = leadingIconOnClick
         )
-        TaskDetailScope()
+        when (state) {
+            is TaskDetailUiState.Success -> {
+                TaskDetailScope(
+                    task = state.timer,
+                    onStart = {
+                        onStart(state.timer.length)
+                    },
+                    onPause = onPause,
+                    onStop = onStop
+                )
+            }
+            else -> {}
+        }
 
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun TaskDetailScope() {
+fun TaskDetailScope(
+    task: Timer,
+    onStart: () -> Unit = {},
+    onPause: () -> Unit = {},
+    onStop: () -> Unit = {},
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -84,14 +129,18 @@ fun TaskDetailScope() {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     bottom.linkTo(controller.top)
-                }
+                },
+                task = task
             )
             TaskTimerController(
                 modifier = Modifier.constrainAs(controller) {
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }
+                },
+                onStart = onStart,
+                onPause = onPause,
+                onStop = onStop
             )
         }
     }
@@ -107,16 +156,18 @@ fun TaskRemainingMinutes(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-private fun ElapsedMinutes(modifier: Modifier = Modifier) {
+private fun ElapsedMinutes(
+    minutes: String = "12",
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier,
-
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Minutes Elapsed")
         TextIcon(
-            text = "12",
+            text = minutes,
             leadingIcon = R.drawable.ic_hourglass_bottom
         )
     }
@@ -124,7 +175,10 @@ private fun ElapsedMinutes(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-private fun RemainingMinutes(modifier: Modifier = Modifier) {
+private fun RemainingMinutes(
+    minutes: String = "12",
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.End,
@@ -132,27 +186,34 @@ private fun RemainingMinutes(modifier: Modifier = Modifier) {
     ) {
         Text(text = "Minutes Remaining")
         TextIcon(
-            text = "12",
+            text = minutes,
             trailingIcon = R.drawable.ic_hourglass_top
         )
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun TaskTimer(modifier: Modifier = Modifier) {
+fun TaskTimer(
+    task: Timer,
+    modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Design the app", fontSize = 32.sp)
-        Timer()
+        Timer(
+            minutes = task.minutes,
+            seconds = task.seconds
+        )
     }
 }
 
 @Composable
-private fun Timer() {
+private fun Timer(
+    minutes: String = "120",
+    seconds: String = "45"
+) {
     Column(
         modifier = Modifier
             .wrapContentHeight()
@@ -170,7 +231,7 @@ private fun Timer() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "120", fontSize = 56.sp)
+                Text(text = minutes, fontSize = 56.sp)
 
                 Text(
                     text = "Minutes",
@@ -192,7 +253,7 @@ private fun Timer() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "45", fontSize = 56.sp)
+                Text(text = seconds, fontSize = 56.sp)
 
                 Text(
                     text = "Seconds",
@@ -226,7 +287,12 @@ private fun Timer() {
 
 @Preview(showBackground = true)
 @Composable
-fun TaskTimerController(modifier: Modifier = Modifier) {
+fun TaskTimerController(
+    modifier: Modifier = Modifier,
+    onStart: () -> Unit = {},
+    onPause: () -> Unit = {},
+    onStop: () -> Unit = {},
+) {
     Row(
         modifier = modifier
             .wrapContentHeight()
@@ -234,13 +300,13 @@ fun TaskTimerController(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = onStop) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_stop),
                 contentDescription = null
             )
         }
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = onStart) {
             Icon(
                 modifier = Modifier.size(48.dp),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_play_circle),
@@ -248,7 +314,7 @@ fun TaskTimerController(modifier: Modifier = Modifier) {
             )
 
         }
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = onPause) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_pause_circle),
                 contentDescription = null

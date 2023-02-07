@@ -17,7 +17,7 @@ fun NavController.navigateToTaskList(navOptions: NavOptions? = NavOptions.Builde
 
 fun NavGraphBuilder.taskList(
     navigateToConfigureTask: () -> Unit,
-    onItemClick : () -> Unit
+    onItemClick : (taskId : Int) -> Unit
 ) {
     composable(route = taskListRoute) {
         TaskListScreen(

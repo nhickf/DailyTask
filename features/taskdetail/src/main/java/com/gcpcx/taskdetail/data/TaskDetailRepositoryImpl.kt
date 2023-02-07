@@ -10,8 +10,9 @@ import kotlinx.coroutines.flow.map
 class TaskDetailRepositoryImpl(
    private val repository: ILocalSourceRepository
 ) : ITaskDetailRepository{
-    override suspend fun updateTask(task: Task) {
-        repository.updateTask(task.wrapTaskToEntity())
+
+    override suspend fun updateTime(id: Int, currentLength: Long) {
+        repository.updateTime(id, currentLength)
     }
 
     override fun getTask(id: Int): Flow<Task> = repository.getTask(id).map {

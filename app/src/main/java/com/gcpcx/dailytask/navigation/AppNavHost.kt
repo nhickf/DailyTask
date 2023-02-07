@@ -30,7 +30,7 @@ fun AppNavHost(
                 navController.navigateToConfigureTask()
             },
             onItemClick = {
-                navController.navigateToTaskDetail()
+                navController.navigateToTaskDetail(it)
             }
         )
         configureTask()

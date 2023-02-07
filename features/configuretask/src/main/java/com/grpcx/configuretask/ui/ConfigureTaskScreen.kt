@@ -26,9 +26,9 @@ import org.koin.core.parameter.parametersOf
 @Preview(showBackground = true)
 @Composable
 fun ScreenPreview() {
-    ConfigureTaskScope(defaultTask){}
+    ConfigureTaskScope(defaultTask, {}, {}
+    ) {}
 }
-
 
 @Composable
 fun ConfigureTaskScreen() {
@@ -36,21 +36,40 @@ fun ConfigureTaskScreen() {
         parametersOf(1)
     }
     val uiState by viewModel.uiState.collectAsState()
-    ConfigureTaskContent(state = uiState , onClick = viewModel::saveTask)
+    ConfigureTaskContent(
+        state = uiState,
+        onClick = viewModel::saveTask,
+        onTitleValueChange = viewModel::onTitleValueChange,
+        onDurationValueChange = viewModel::onDurationValueChange
+    )
 }
 
 @Composable
-fun ConfigureTaskContent(state : ConfigureTaskUiState, onClick: (task: Task) -> Unit){
-    when(state){
+fun ConfigureTaskContent(
+    state: ConfigureTaskUiState,
+    onClick: (task: Task) -> Unit,
+    onTitleValueChange: (value: String) -> Unit,
+    onDurationValueChange: (value: String) -> Unit
+) {
+    when (state) {
         is ConfigureTaskUiState.Error -> Text(text = "error")
         ConfigureTaskUiState.Loading -> Text(text = "Loading")
-        is ConfigureTaskUiState.AddNewTask -> ConfigureTaskScope(task = state.task, onClick = onClick)
+        is ConfigureTaskUiState.AddNewTask -> ConfigureTaskScope(
+            task = state.task,
+            onClick = onClick,
+            onTitleValueChange = onTitleValueChange,
+            onDurationValueChange = onDurationValueChange
+        )
     }
-    ConfigureTaskScope(task = null, onClick = onClick)
 }
 
 @Composable
-fun ConfigureTaskScope(task : Task?, onClick:(task : Task) -> Unit) {
+fun ConfigureTaskScope(
+    task: Task?,
+    onClick: (task: Task) -> Unit,
+    onTitleValueChange: (value: String) -> Unit,
+    onDurationValueChange: (value: String) -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -64,15 +83,15 @@ fun ConfigureTaskScope(task : Task?, onClick:(task : Task) -> Unit) {
             placeholder = {
                 Text(text = "Task Title")
             },
-            onValueChange = {},
+            onValueChange = onTitleValueChange,
         )
 
         OutlinedTextField(
             value = task?.length.toString(),
             placeholder = {
-                          Text(text = "Task Duration in Minutes")
+                Text(text = "Task Duration in Minutes")
             },
-            onValueChange = {},
+            onValueChange = onDurationValueChange,
             leadingIcon = {
                 Icon(painter = painterResource(id = R.drawable.ic_clock), contentDescription = null)
             }
@@ -81,12 +100,11 @@ fun ConfigureTaskScope(task : Task?, onClick:(task : Task) -> Unit) {
         ThemeField()
 
         Button(onClick = {
-            onClick(task ?: Task(title =  "2", length =  3, theme =  "33"))
+            onClick(task ?: Task(title = "2", length = 3, currentLength = 3,theme = "33"))
         }) {
 
         }
     }
-
 }
 
 @Preview(showBackground = true)

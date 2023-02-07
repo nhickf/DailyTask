@@ -1,6 +1,5 @@
 package com.grpcx.configuretask.domain
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gcpx.core.data.model.Task
@@ -14,21 +13,54 @@ internal class ConfigureTaskViewModel(
     private val repository: IConfigureTaskRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<ConfigureTaskUiState> = repository.getTask(taskId)
-        .map { ConfigureTaskUiState.AddNewTask(it) }
-        .catch { ConfigureTaskUiState.Error(it.message) }
-        .stateIn(
-            scope = viewModelScope,
-            initialValue = ConfigureTaskUiState.Loading,
-            started = SharingStarted.WhileSubscribed(5_000)
-        )
+    private val _uiState : MutableStateFlow<ConfigureTaskUiState> = MutableStateFlow(ConfigureTaskUiState.Loading)
+    val uiState : StateFlow<ConfigureTaskUiState> = _uiState
 
+    init {
+        viewModelScope.launch {
+            _uiState.emit(
+                ConfigureTaskUiState.AddNewTask(
+                    Task(
+                        title = "",
+                        length = 0,
+                        currentLength = 0,
+                        theme = ""
+                    )
+                )
+            )
+        }
+    }
 
     fun saveTask(task: Task) {
         viewModelScope.launch {
             repository.addTask(task = task)
         }
     }
+
+    fun onDurationValueChange(value : String){
+        viewModelScope.launch {
+            with(_uiState.value){
+                if (this is ConfigureTaskUiState.AddNewTask){
+                    _uiState.emit(ConfigureTaskUiState.AddNewTask(
+                        task?.copy(length = value.toInt())
+                    ))
+                }
+            }
+        }
+    }
+
+    fun onTitleValueChange(value : String){
+        viewModelScope.launch {
+            with(_uiState.value){
+                if (this is ConfigureTaskUiState.AddNewTask){
+                    _uiState.emit(ConfigureTaskUiState.AddNewTask(
+                        task?.copy(title = value)
+                    ))
+                }
+            }
+        }
+    }
+
 }
 
 sealed interface ConfigureTaskUiState {

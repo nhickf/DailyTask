@@ -17,6 +17,9 @@ internal interface TaskDao {
     @Query("Select * from TaskEntity where id =:id")
     fun getTask(id : Int) : Flow<TaskEntity>
 
+    @Query("UPDATE TaskEntity SET currentLength = :currentLength where id =:id ")
+    suspend fun updateTime(id: Int , currentLength : Long)
+
     @Insert
     suspend fun addTask(taskEntity: TaskEntity)
 

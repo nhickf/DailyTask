@@ -23,7 +23,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TaskListScreen(
-    navigateToConfigureTask: () -> Unit, onItemClick: () -> Unit
+    navigateToConfigureTask: () -> Unit, onItemClick: (taskId : Int) -> Unit
 ) {
 
     val viewModel = koinViewModel<TaskListViewModel>()
@@ -40,7 +40,7 @@ fun TaskListScreen(
 private fun TaskListContent(
     state: TaskUiState,
     navigateToConfigureTask: () -> Unit,
-    onItemClick: () -> Unit
+    onItemClick: (taskId : Int) -> Unit
 ) {
 
     Column {
@@ -52,7 +52,7 @@ private fun TaskListContent(
             TaskUiState.Empty -> EmptyItems()
             TaskUiState.Loading -> LoadingItems()
             is TaskUiState.Tasks -> TaskListScope(items = state.tasks) {
-                onItemClick.invoke()
+                onItemClick.invoke(it)
             }
         }
     }
@@ -61,7 +61,7 @@ private fun TaskListContent(
 @Composable
 private fun TaskListScope(
     items: List<Task>,
-    onItemClick: () -> Unit
+    onItemClick: (taskId : Int) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(
@@ -80,8 +80,8 @@ private fun TaskListScope(
         }
 
         items(items) {
-            TaskItem(task = it) {
-                onItemClick.invoke()
+            TaskItem(task = it) { id ->
+                onItemClick.invoke(id)
             }
             Spacer(modifier = Modifier.height(16.dp))
         }

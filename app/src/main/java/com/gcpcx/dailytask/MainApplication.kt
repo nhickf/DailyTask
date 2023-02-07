@@ -1,6 +1,7 @@
 package com.gcpcx.dailytask
 
 import android.app.Application
+import com.gcpcx.taskdetail.di.taskDetailModule
 import com.gcpx.core.di.coreModule
 import com.gcpx.tasklist.di.taskListModule
 import com.grpcx.configuretask.di.configureTaskModule
@@ -20,7 +21,8 @@ class MainApplication : Application() {
                 listOf(
                     coreModule,
                     taskListModule,
-                    configureTaskModule
+                    configureTaskModule,
+                    taskDetailModule
                 )
             )
         }

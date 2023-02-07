@@ -15,6 +15,10 @@ internal class LocalSourceRepositoryImpl(
         return taskDao.getTask(id)
     }
 
+    override suspend fun updateTime(id: Int, currentLength: Long) {
+        return taskDao.updateTime(id, currentLength)
+    }
+
     override suspend fun addTask(taskEntity: TaskEntity) {
         taskDao.addTask(taskEntity)
     }
